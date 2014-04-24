@@ -2,6 +2,7 @@ package com.lordofthejars.nosqlunit.demo.couchbase;
 
 import com.couchbase.client.CouchbaseClient;
 import com.lordofthejars.nosqlunit.demo.model.Book;
+import lombok.SneakyThrows;
 import net.spy.memcached.internal.OperationCompletionListener;
 import net.spy.memcached.internal.OperationFuture;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -13,9 +14,6 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
-/**
- * Created by rob on 4/22/14.
- */
 public class BookManager {
 
     public static final ObjectMapper mapper = new ObjectMapper();
@@ -25,44 +23,62 @@ public class BookManager {
 
     private CouchbaseClient client;
 
-    public BookManager(CouchbaseClient client) {
+    public BookManager(final CouchbaseClient client) {
         this.client = client;
     }
 
-    public void create(final Book book) throws ExecutionException, InterruptedException {
-        /**
-         * Best way to have search capabilities is by another document on couchbase
-         */
+    public OperationFuture<Boolean> create(final Book book) throws ExecutionException, InterruptedException {
+        /*
+        Best way to have search capabilities is by another document on couchbase, so we are adding it first and then
+        the proper document.
+          */
         final String key = nextKey();
-        String value = toTitleKey(book.getTitle());
-        OperationFuture<Boolean> future = client.set(value, key);
-        future.addListener(new OperationCompletionListener() {
+        final String value = toTitleKey(book.getTitle());
+        final OperationFuture<Boolean> future = client.set(value, key);
+        return future.addListener(new OperationCompletionListener() {
             @Override
-            public void onComplete(OperationFuture<?> operationFuture) throws Exception {
+            public void onComplete(final OperationFuture<?> operationFuture) throws Exception {
                 client.set(key, mapper.writeValueAsBytes(book));
             }
-        }).get();
+        });
     }
 
-    private String nextKey() {
-        return "K::" + UUID.randomUUID().toString();
-    }
+    @SneakyThrows(IOException.class)
+    public Book findBookByTitle(final String title) {
+        final String key = ((String) client.get(toTitleKey(title))).replaceAll("\"","");
 
-    public Book findBookByTitle(String title) throws IOException {
-        String key = (String) client.get(toTitleKey(title));
 
-        String json = (String) client.get(key);
+        if (key == null) {
+            throw new IllegalStateException("Cannot find the key object for the campaign with title: " + title);
+        }
+
+        final String json = (String) client.get(key);
         return mapper.readValue(json, Book.class);
     }
 
-    private String toTitleKey(String title) {
-        return "Tittle::" + toSlug(title);
+    @SneakyThrows(IOException.class)
+    public Book findById(final Long id) {
+        final String json = (String) client.get(toIdKey(String.valueOf(id)));
+        return mapper.readValue(json, Book.class);
     }
 
-    public static String toSlug(String input) {
-        String nonwhites = WHITESPACE.matcher(input).replaceAll("-");
-        String normalized = Normalizer.normalize(nonwhites, Normalizer.Form.NFD);
-        String slug = NON_LATIN.matcher(normalized).replaceAll("");
+    private String toTitleKey(final String title) {
+        return "T::" + toSlug(title);
+    }
+
+    private String nextKey() {
+        // TODO change this for a proper autonumerical done by couchbase incr, maybe get rid of it via nosqlunit.
+        return toIdKey(UUID.randomUUID().toString());
+    }
+
+    private String toIdKey(final String id) {
+        return "K::" + id;
+    }
+
+    public static String toSlug(final String input) {
+        final String nonwhites = WHITESPACE.matcher(input).replaceAll("-");
+        final String normalized = Normalizer.normalize(nonwhites, Normalizer.Form.NFD);
+        final String slug = NON_LATIN.matcher(normalized).replaceAll("");
         return slug.toLowerCase(Locale.ENGLISH);
     }
 
