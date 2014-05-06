@@ -1,7 +1,13 @@
 package com.lordofthejars.nosqlunit.demo.couchbase;
 
-/**
- * Created by rob on 4/25/14.
- */
+import com.couchbase.client.CouchbaseClient;
+
+import javax.inject.Inject;
+
 public class FindBooksByName {
+
+
+    @Inject
+    CouchbaseClient client;
 }
+

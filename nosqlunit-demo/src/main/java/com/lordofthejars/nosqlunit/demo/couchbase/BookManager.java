@@ -29,22 +29,24 @@ public class BookManager {
         this.client = client;
     }
 
-    public void create(final Book book) throws ExecutionException, InterruptedException {
-        /**
-         * Best way to have search capabilities is by another document on couchbase
-         */
+    public OperationFuture<Boolean> create(final Book book) throws ExecutionException, InterruptedException {
+        /*
+        Best way to have search capabilities is by another document on couchbase, so we are adding it first and then
+        the proper document.
+          */
         final String key = nextKey();
         String value = toTitleKey(book.getTitle());
         OperationFuture<Boolean> future = client.set(value, key);
-        future.addListener(new OperationCompletionListener() {
+        return future.addListener(new OperationCompletionListener() {
             @Override
             public void onComplete(OperationFuture<?> operationFuture) throws Exception {
                 client.set(key, mapper.writeValueAsBytes(book));
             }
-        }).get();
+        });
     }
 
     private String nextKey() {
+        // TODO change this for a proper autonumerical done by couchbase incr, maybe get rid of it via nosqlunit.
         return "K::" + UUID.randomUUID().toString();
     }
 
