@@ -6,6 +6,7 @@
         <artifactId>nosqlunit</artifactId>
         <groupId>com.lordofthejars</groupId>
         <version>0.7.10-SNAPSHOT</version>
+        <relativePath>..</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -32,13 +33,12 @@
         <dependency>
             <groupId>com.couchbase.client</groupId>
             <artifactId>couchbase-client</artifactId>
-            <version>1.4.0</version>
+            <version>1.4.1</version>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
