@@ -1,13 +1,10 @@
-package com.lordofthejars.nosqlunit;
-
-import com.lordofthejars.nosqlunit.couchbase.CouchbaseConfiguration;
+package com.lordofthejars.nosqlunit.couchbase;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RemoteCouchbaseConfigurationBuilder {
-
 
     public static class Builder {
 
@@ -23,18 +20,18 @@ public class RemoteCouchbaseConfigurationBuilder {
             return new Builder();
         }
 
-        public Builder bucketName(String name) {
+        public Builder bucketName(final String name) {
             this.name = name;
             return this;
         }
 
-        public Builder bucketPassword(String pass) {
-            this.password = pass;
+        public Builder bucketPassword(final String pass) {
+            password = pass;
             return this;
         }
 
-        public Builder serverUri(String url) {
-            this.uris.add(URI.create(url));
+        public Builder serverUri(final String url) {
+            uris.add(URI.create(url));
             return this;
         }
 

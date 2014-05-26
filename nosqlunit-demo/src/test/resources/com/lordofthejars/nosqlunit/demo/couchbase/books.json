@@ -1,6 +1,22 @@
 {
-	"data":
-			[
-				{"_id":"K::", "title": "The Hobbit","numberOfPages": "293"}
-			]
+    "data":
+    {
+        "K::1": {
+            "doc":"Title::The-Hobbit"
+        },
+        "T::The-Hobbit": {
+            "doc": {
+                "id": 1,
+                "title": "The Hobbit",
+                "numberOfPages": 293
+            }
+        },
+        "AboutToExpire": {
+            "doc": "Dummy",
+            "expirationMSecs": 100
+        }
+    },
+    "designDocs":[
+
+    ]
 }
