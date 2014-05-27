@@ -9,7 +9,7 @@ public class RemoteCouchbaseConfigurationBuilder {
     public static class Builder {
 
         private String name;
-        private String password;
+        private String password = "";
         private List<URI> uris;
 
         private Builder() {

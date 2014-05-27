@@ -5,7 +5,6 @@ import com.lordofthejars.nosqlunit.core.AbstractNoSqlTestRule;
 import com.lordofthejars.nosqlunit.core.DatabaseOperation;
 import lombok.experimental.Builder;
 
-@Builder
 public class CouchbaseRule extends AbstractNoSqlTestRule {
 
     private static final String EXTENSION = "json";
