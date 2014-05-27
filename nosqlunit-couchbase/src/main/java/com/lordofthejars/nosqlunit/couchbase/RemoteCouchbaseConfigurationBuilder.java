@@ -37,7 +37,7 @@ public class RemoteCouchbaseConfigurationBuilder {
 
         public CouchbaseConfiguration build() {
             if (uris.isEmpty()) {
-                uris.add(URI.create("http://localhost:8091"));
+                uris.add(URI.create("http://localhost:8091/pools"));
             }
             return new CouchbaseConfiguration(uris, password, name);
         }

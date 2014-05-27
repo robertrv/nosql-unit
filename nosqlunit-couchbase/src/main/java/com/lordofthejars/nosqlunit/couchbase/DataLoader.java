@@ -7,9 +7,13 @@ import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.type.MapType;
+import org.codehaus.jackson.map.type.TypeFactory;
+import org.codehaus.jackson.type.JavaType;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -39,7 +43,8 @@ public class DataLoader {
 
     @SneakyThrows({JsonParseException.class, JsonMappingException.class, IOException.class})
     public static Map<String, Document> getDocuments(final InputStream dataScript) {
-        final Map<String, Object> rootNode = MAPPER.readValue(dataScript, Map.class);
+
+        MAPPER.readValue(dataScript, new HashMap<String, Map<String, Document>>());
 
         final Object dataElements = rootNode.get(DOCUMENTS_ROOT);
 

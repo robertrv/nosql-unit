@@ -3,6 +3,7 @@ package com.lordofthejars.nosqlunit.couchbase;
 import com.couchbase.client.CouchbaseClient;
 import com.lordofthejars.nosqlunit.core.AbstractJsr330Configuration;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -21,15 +22,12 @@ public class CouchbaseConfiguration extends AbstractJsr330Configuration {
 
     private CouchbaseClient client;
 
+    @SneakyThrows(IOException.class)
     public CouchbaseConfiguration(final List<URI> urlList, final String bucketPassword, final String bucketName) {
         this.urlList = urlList;
         this.bucketPassword = bucketPassword;
         this.bucketName = bucketName;
-        try {
-            client = new CouchbaseClient(urlList, bucketName, bucketPassword);
-        } catch (final IOException e) {
-            log.error("Oopsie! There has been an error!", e);
-        }
+        client = new CouchbaseClient(urlList, bucketName, bucketPassword);
     }
 
 }

@@ -21,8 +21,7 @@ public class FindBooksTest {
     CouchbaseClient client;
 
     @Rule
-    public CouchbaseRule couchbaseRule =
-            defaultRemoteCouchbase("testBucket");
+    public CouchbaseRule couchbaseRule = defaultRemoteCouchbase("testBucket");
 
     @Inject
     private CouchbaseClient couchbaseClient;
