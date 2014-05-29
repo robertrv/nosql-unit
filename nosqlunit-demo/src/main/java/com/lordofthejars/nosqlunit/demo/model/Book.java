@@ -1,9 +1,13 @@
 package com.lordofthejars.nosqlunit.demo.model;
 
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
+@Data
+@NoArgsConstructor // Jackson required
+@AllArgsConstructor
 public class Book {
 
 	private String title;

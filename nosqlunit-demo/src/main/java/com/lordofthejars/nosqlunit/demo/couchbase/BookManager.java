@@ -45,7 +45,12 @@ public class BookManager {
 
     @SneakyThrows(IOException.class)
     public Book findBookByTitle(final String title) {
-        final String key = (String) client.get(toTitleKey(title));
+        final String key = ((String) client.get(toTitleKey(title))).replaceAll("\"","");
+
+
+        if (key == null) {
+            throw new IllegalStateException("Cannot find the key object for the campaign with title: " + title);
+        }
 
         final String json = (String) client.get(key);
         return mapper.readValue(json, Book.class);

@@ -21,7 +21,7 @@ public class DataLoader {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    public static final String DOCUMENTS_ROOT = "data";
+    public static final String DATA_ROOT = "data";
 
     public static final String DESIGN_ROOT = "designDocs";// TODO
 
@@ -32,11 +32,12 @@ public class DataLoader {
         insertDocuments(documentsIterator);
     }
 
-    @SneakyThrows({ExecutionException.class, InterruptedException.class})
+    @SneakyThrows({ExecutionException.class, InterruptedException.class, IOException.class})
     private void insertDocuments(final Map<String, Document> documentsIterator) {
         for (final Map.Entry<String, Document> documentEntry : documentsIterator.entrySet()) {
             final Document document = documentEntry.getValue();
-            couchbaseClient.add(documentEntry.getKey(), document.calculateExpiration(), document).get();
+            couchbaseClient.add(documentEntry.getKey(), document.calculateExpiration(),
+                    MAPPER.writeValueAsString(document.getDocument())).get();
         }
     }
 
@@ -48,7 +49,7 @@ public class DataLoader {
         MapType type = typeFactory.constructMapType(Map.class, stringType, mapType);
 
         Map<String, Map<String, Document>> rootNode = MAPPER.readValue(dataScript, type);
-        return rootNode.get(DOCUMENTS_ROOT);
+        return rootNode.get(DATA_ROOT);
     }
 
 }
