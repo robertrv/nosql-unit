@@ -42,7 +42,7 @@ public class CouchbaseAssertion {
                                           final CouchbaseClient couchbaseClient) {
         for (final String id : allDocumentIds) {
             final Object real = couchbaseClient.get(id);
-            final Object expected = expectedDocuments.get(id).getDoc();
+            final Object expected = expectedDocuments.get(id).getDocument();
 
             if (!deepEquals(real, expected)) {
                 throw FailureHandler.createFailure(
@@ -68,12 +68,14 @@ public class CouchbaseAssertion {
 
     private static List<String> getAllDocumentIds(final CouchbaseClient couchbaseClient) {
         final String freeDesignDocName = nextUniqueViewName(couchbaseClient);
-        final View allDocsView = createDesignDocAndView(freeDesignDocName, couchbaseClient);
 
-        final List<String> result = getAllDocumentIds(allDocsView, couchbaseClient);
-
-        deleteDesignDoc(freeDesignDocName, couchbaseClient);
-        return result;
+        try {
+            final View allDocsView = createDesignDocAndView(freeDesignDocName, couchbaseClient);
+            final List<String> result = getAllDocumentIds(allDocsView, couchbaseClient);
+            return result;
+        } finally {
+            deleteDesignDoc(freeDesignDocName, couchbaseClient);
+        }
     }
 
     private static List<String> getAllDocumentIds(final View allDocsView, final CouchbaseClient couchbaseClient) {

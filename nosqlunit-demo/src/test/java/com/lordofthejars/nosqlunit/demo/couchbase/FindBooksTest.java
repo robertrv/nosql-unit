@@ -5,13 +5,13 @@ import com.lordofthejars.nosqlunit.annotation.ShouldMatchDataSet;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.couchbase.CouchbaseRule;
+import com.lordofthejars.nosqlunit.couchbase.RemoteCouchbaseConfigurationBuilder;
 import com.lordofthejars.nosqlunit.demo.model.Book;
 import org.junit.Rule;
 import org.junit.Test;
 
 import javax.inject.Inject;
 
-import static com.lordofthejars.nosqlunit.couchbase.CouchbaseRule.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -21,7 +21,10 @@ public class FindBooksTest {
     CouchbaseClient client;
 
     @Rule
-    public CouchbaseRule couchbaseRule = defaultRemoteCouchbase("testBucket");
+    public CouchbaseRule couchbaseRule = new CouchbaseRule(RemoteCouchbaseConfigurationBuilder.Builder.start()
+        .bucketName("test")
+        .serverUri("http://10.0.0.3:8091/pools")
+        .build());
 
     @Inject
     private CouchbaseClient couchbaseClient;

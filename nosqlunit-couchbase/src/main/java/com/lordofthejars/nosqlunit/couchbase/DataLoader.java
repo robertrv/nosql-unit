@@ -13,7 +13,6 @@ import org.codehaus.jackson.type.JavaType;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -43,16 +42,13 @@ public class DataLoader {
 
     @SneakyThrows({JsonParseException.class, JsonMappingException.class, IOException.class})
     public static Map<String, Document> getDocuments(final InputStream dataScript) {
+        TypeFactory typeFactory = MAPPER.getTypeFactory();
+        final MapType mapType = typeFactory.constructMapType(Map.class, String.class, Document.class);
+        JavaType stringType = typeFactory.uncheckedSimpleType(String.class);
+        MapType type = typeFactory.constructMapType(Map.class, stringType, mapType);
 
-        MAPPER.readValue(dataScript, new HashMap<String, Map<String, Document>>());
-
-        final Object dataElements = rootNode.get(DOCUMENTS_ROOT);
-
-        if (dataElements instanceof Map) {
-            return (Map<String, Document>) dataElements;
-        } else {
-            throw new IllegalArgumentException("Array of documents are required.");
-        }
+        Map<String, Map<String, Document>> rootNode = MAPPER.readValue(dataScript, type);
+        return rootNode.get(DOCUMENTS_ROOT);
     }
 
 }

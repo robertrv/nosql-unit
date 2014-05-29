@@ -1,22 +1,27 @@
 {
-    "data":
-    {
+    "data": {
         "K::1": {
-            "doc":"Title::The-Hobbit"
+            "document": "Title::The-Hobbit"
         },
         "T::The-Hobbit": {
-            "doc": {
+            "document": {
                 "id": 1,
                 "title": "The Hobbit",
                 "numberOfPages": 293
             }
         },
         "AboutToExpire": {
-            "doc": "Dummy",
+            "document": "Dummy",
             "expirationMSecs": 100
         }
     },
-    "designDocs":[
-
-    ]
+    "designDocs": {
+        "myDesignDoc": {
+            "views": [{
+                "name": "myFirstView",
+                "map": "function (doc, meta) {\n  if(doc.type && doc.type == \"beer\") {\nemit(doc.name);\n}\n",
+                "reduce": "_stats"
+            }]
+        }
+    }
 }

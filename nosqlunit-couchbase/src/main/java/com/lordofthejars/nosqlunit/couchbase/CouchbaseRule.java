@@ -3,7 +3,6 @@ package com.lordofthejars.nosqlunit.couchbase;
 import com.couchbase.client.CouchbaseClient;
 import com.lordofthejars.nosqlunit.core.AbstractNoSqlTestRule;
 import com.lordofthejars.nosqlunit.core.DatabaseOperation;
-import lombok.experimental.Builder;
 
 public class CouchbaseRule extends AbstractNoSqlTestRule {
 
