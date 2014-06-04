@@ -13,6 +13,7 @@ import com.lordofthejars.nosqlunit.core.FailureHandler;
 import com.lordofthejars.nosqlunit.couchbase.model.Document;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
@@ -42,7 +43,7 @@ public class CouchbaseAssertion {
                                           final CouchbaseClient couchbaseClient) {
         for (final String id : allDocumentIds) {
             final Object real = couchbaseClient.get(id);
-            final Object expected = expectedDocuments.get(id).getDocument();
+            final Object expected = toJson(expectedDocuments.get(id).getDocument());
 
             if (!deepEquals(real, expected)) {
                 throw FailureHandler.createFailure(
@@ -55,6 +56,16 @@ public class CouchbaseAssertion {
     @SneakyThrows(IOException.class)
     private static String toJson(final Object document) {
         return OBJECT_MAPPER.writeValueAsString(document);
+    }
+
+    @SneakyThrows(IOException.class)
+    private static Object fromJson(final Object document) {
+        if (document instanceof String) {
+            String json = (String) document;
+            JsonNode node = OBJECT_MAPPER.readTree(json);
+            return OBJECT_MAPPER.readValue(json, String.class);
+        }
+        return document;
     }
 
     private static void checkNumberOfDocuments(final Map<String, Document> expectedDocuments, final List<String> allDocumentIds) {
